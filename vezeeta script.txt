@@ -1,0 +1,111 @@
+create table PATIENTS
+(PATIENT_ID number primary key NOT NULL , PATIENT_NAME varchar(50) NOT NULL , PHONE_NUMBER varchar(50) NOT NULL , PATIENT_AGE NUMBER NOT NULL );
+create table DOCTORS
+(DOCTOR_ID number primary key NOT NULL,DOCTOR_NAME varchar(50) NOT NULL, DOCTOR_ACCOUNT varchar(50) NOT NULL , SPECIALTY varchar(50) NOT NULL , DOC_AGE number NOT NULL, FEES NUMBER NOT NULL  );
+create table CLINIC 
+(CLINIC_ID NUMBER primary key ,CLINIC_PHONE varchar(50) NOT NULL ,CLINC_NAME varchar(50) NOT NULL , ADDRESS varchar(50) NOT NULL , START_TIME number NOT NULL, END_TIME number NOT NULL  );
+create table RESERVATIONS 
+(A_ID number primary key , CLINIC_PHONE varchar2(50) not null , A_LOCATION varchar2(50) NOT NULL ,  A_DAY varchar2(50) NOT NULL , A_TIME varchar2(50) NOT NULL , PATIENT_NAME  varchar2(50) not null, DOCTOR_NAME varchar2(50) not null);
+create table assign 
+(doctor_id number references doctors(doctor_id), clinic_id number references clinic(clinic_id));
+
+insert into doctors values (1,'Hossam Mounir','Hoss12@gmail.com','Dentistry',32,150);
+insert into doctors values (2,'Rawan Mohamed','RW10@gmail.com','Dentistry',30,100);
+insert into doctors values (3,'Ramy Rashed','Ramy10@gmail.com','Dentistry',35,300);
+insert into doctors values (4,'Hesham Mansour','Hmans11@gmail.com','Ear and Nose',42,400);
+insert into doctors values (5,'Nermeen Awad','Nermin44@gmail.com','Ear and Nose',30,300);
+insert into doctors values (6,'Ahmed Shafik','ahmed25@gmail.com','Neurology',40,500);
+insert into doctors values (7,'Gehan Taher','gege5@gmail.com','Neurology',42,300);
+insert into doctors values (8,'Maher Mahmoud','maher23@gmail.com','Dermatology',27,350);
+insert into doctors values (9,'Islam Sayed','eslamsayed22605@gmail.com','Dermatology',36,250);
+insert into doctors values (10,'Yara Samir','yarasamir27@gmail.com','Dermatology',29,300);
+
+insert into clinic values (20335,'Hayat Clinics ','el khalifa el zafer',6,10,1);
+insert into clinic values (16357,'Zaher Zone Clinics  ','Hassan Al Maamon',5,9,2);
+insert into clinic values (57322,'The Doctors Clinics ','Nasr City',4,9,3);
+insert into clinic values (16676,'Speed Clinics','Heliopolis',5,8,4);
+insert into clinic values (16530,'Osman Dental Clinic ','Hassan Al Maamon',5,9,5);
+
+
+insert into Assign values(1,1);
+insert into Assign values(1,2);
+insert into Assign values(1,3);
+insert into Assign values(2,1);
+insert into Assign values(2,3);
+insert into Assign values(3,3);
+insert into Assign values(6,4);
+insert into Assign values(6,3);
+
+
+create or replace PROCEDURE Doctor_Cost
+ (DName in varchar2 , Dcost out Number)
+IS
+BEGIN
+SELECT FEES 
+INTO dcost
+FROM doctors 
+WHERE doctor_name = dname;
+END Doctor_Cost;
+
+
+create or replace PROCEDURE clinics
+(Dname in VARCHAR2,CLN out sys_refcursor)
+IS
+BEGIN
+OPEN cln FOR 
+SELECT c.clinc_name
+FROM clinic c , assign a, doctors d 
+WHERE d.Doctor_name = dname 
+and c.clinic_id = a.clinic_id 
+and d.doctor_id = a.doctor_id;
+END clinics ;
+  
+
+create or replace PROCEDURE clinic_info
+ (cl in varchar2 , doc in VARCHAR2 ,info out sys_refcursor)
+IS
+BEGIN
+OPEN info for
+SELECT c.clinic_phone , c.address , c.start_time , c.end_time
+from clinic c , doctors d , assign a
+where c.clinc_name = cl and  d.doctor_name = doc
+and c.clinic_id = a.clinic_id and d.doctor_id = a.doctor_id;
+end ;
+
+
+
+create or replace PROCEDURE GetPID(PID out NUMBER)
+as 
+BEGIN
+select max(patient_id)
+into PID
+from patients;
+end ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
